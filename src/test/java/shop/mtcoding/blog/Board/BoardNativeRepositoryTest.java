@@ -20,6 +20,29 @@ public class BoardNativeRepositoryTest {
     private BoardNativeRepository boardNativeRepository;
 
     @Test
+    public void updateById_test() {
+        // given
+        int id = 1;
+        String title = "제목수정1";
+        String content = "내용수정1";
+        String username = "bori";
+
+        // when
+        boardNativeRepository.updateById(id, title, content, username);
+
+        // then
+        Board board = boardNativeRepository.findById(id);
+        System.out.println("updateById_test/board : " + board);
+        assertThat(board.getTitle()).isEqualTo("제목수정1");
+        assertThat(board.getContent()).isEqualTo("내용수정1");
+        assertThat(board.getUsername()).isEqualTo("bori");
+
+
+        // org.assertj.core.api
+
+    }
+
+    @Test
     public void deleteById_test() {
         // given
         int id = 1;
