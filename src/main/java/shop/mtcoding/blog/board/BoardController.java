@@ -16,6 +16,13 @@ public class BoardController {
 
     private final BoardNativeRepository boardNativeRepository;
 
+    @PostMapping("/board/{id}/delete")
+    public String delete(@PathVariable Integer id) {
+        boardNativeRepository.deleteByIc(id);
+
+        return "redirect:/";
+    }
+
     @GetMapping( "/")
     public String index(HttpServletRequest request) {
         List<Board> boardList = boardNativeRepository.findAll();
@@ -37,7 +44,10 @@ public class BoardController {
     }
 
     @GetMapping("/board/{id}")
-    public String detail(@PathVariable Integer id) { // Integer null 들어오면 확인 가능 (int는 0이라 뜸)
+    public String detail(@PathVariable Integer id, HttpServletRequest request) { // Integer null 들어오면 확인 가능 (int는 0이라 뜸)
+        Board board = boardNativeRepository.findById(id);
+        request.setAttribute("board", board);
+
         return "board/detail";
     }
 }
