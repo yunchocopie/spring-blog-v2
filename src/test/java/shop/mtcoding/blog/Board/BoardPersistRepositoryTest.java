@@ -1,11 +1,11 @@
 package shop.mtcoding.blog.Board;
 
+import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import shop.mtcoding.blog.board.Board;
-import shop.mtcoding.blog.board.BoardNativeRepository;
 import shop.mtcoding.blog.board.BoardPersistRepository;
 
 import java.util.List;
@@ -19,6 +19,34 @@ public class BoardPersistRepositoryTest {
     @Autowired // DI (IoC애 있는 것을 DI 해줌)
     private BoardPersistRepository boardPersistRepository;
 
+    @Autowired
+    private EntityManager em;
+
+    @Test
+    public void deleteById_test() {
+        // given
+        int id = 1;
+
+        // when
+        boardPersistRepository.deleteById(id);
+
+        // then
+
+    }
+
+    @Test
+    public void deleteByIdV2_test() {
+        // given
+        int id = 1;
+
+        // when
+        boardPersistRepository.deleteByIdV2(id);
+
+        // then
+        em.flush();
+
+    }
+
     @Test
     public void findById_test() {
         // given
@@ -26,6 +54,7 @@ public class BoardPersistRepositoryTest {
 
         // when
         Board board = boardPersistRepository.findById(id);
+        // em.clear(); // PC를 지우는 것 -> 쿼리가 날라감 => select 두번 됨
         boardPersistRepository.findById(id);
         //System.out.println("findById_test" + board);
 

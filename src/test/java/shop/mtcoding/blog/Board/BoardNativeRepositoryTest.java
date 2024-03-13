@@ -48,7 +48,7 @@ public class BoardNativeRepositoryTest {
         int id = 1;
 
         // when
-        boardNativeRepository.deleteByIc(id);
+        boardNativeRepository.deleteById(id);
 
         // then
         List<Board> boardList = boardNativeRepository.findAll();
