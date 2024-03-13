@@ -41,5 +41,11 @@ public class Board {
     public String getTime() {
         return MyDateUtil.timestampFormat(createdAt);
     }
+
+    public void update(BoardRequest.UpdateDTO reqDTO) {
+        this.title = reqDTO.getTitle();
+        this.content = reqDTO.getContent();
+        this.username = reqDTO.getUsername();
+    }
 }
 
