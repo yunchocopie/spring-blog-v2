@@ -13,7 +13,7 @@ import java.sql.Timestamp;
 @Entity
 @Data
 @NoArgsConstructor // entity는 디폴트 생성자가 무조건 있어야 한다.
-//@Getter setter는 굳이 만들지 않음
+//@Getter setter는 굳이 만들지 않음#
 public class Board {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // auto_increment

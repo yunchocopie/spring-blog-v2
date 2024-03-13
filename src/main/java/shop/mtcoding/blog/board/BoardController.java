@@ -41,7 +41,7 @@ public class BoardController {
 
     @GetMapping( "/")
     public String index(HttpServletRequest request) {
-        List<Board> boardList = boardNativeRepository.findAll();
+        List<Board> boardList = boardPersistRepository.findAll();
         request.setAttribute("boardList", boardList);
 
         return "index";
