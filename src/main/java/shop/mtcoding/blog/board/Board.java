@@ -1,6 +1,7 @@
 package shop.mtcoding.blog.board;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,11 +24,19 @@ public class Board {
     private String content;
 
     // @JoinColumn(name = "user_id") // 직접 이름 지정
-    @ManyToOne // 연관관계로 보고 user_id로 만들어줌. user(변수명), _id(PK)
+    @ManyToOne(fetch = FetchType.LAZY) // 연관관계로 보고 user_id로 만들어줌. user(변수명), _id(PK)
     private User user;
 
     @CreationTimestamp // pc -> db (날짜 주입)
     private Timestamp createdAt;
 
+    @Builder
+    public Board(Integer id, String title, String content, User user, Timestamp createdAt) {
+        this.id = id;
+        this.title = title;
+        this.content = content;
+        this.user = user;
+        this.createdAt = createdAt;
+    }
 }
 

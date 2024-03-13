@@ -15,6 +15,7 @@ import java.util.List;
 @Controller
 public class BoardController {
 
+    private final BoardRepository boardRepository;
 
     @PostMapping("/board/{id}/update")
     public String update(@PathVariable Integer id) {
@@ -54,7 +55,8 @@ public class BoardController {
 
     @GetMapping("/board/{id}")
     public String detail(@PathVariable Integer id, HttpServletRequest request) { // Integer null 들어오면 확인 가능 (int는 0이라 뜸)
-
+        Board board = boardRepository.findByIdJoinUser(id);
+        request.setAttribute("board", board);
         return "board/detail";
     }
 }
