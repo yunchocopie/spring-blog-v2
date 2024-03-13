@@ -15,55 +15,45 @@ import java.util.List;
 @Controller
 public class BoardController {
 
-    private final BoardNativeRepository boardNativeRepository;
-    private final BoardPersistRepository boardPersistRepository;
 
     @PostMapping("/board/{id}/update")
-    public String update(@PathVariable Integer id, BoardRequest.UpdateDTO reqDTO) {
-        boardPersistRepository.updateById(id, reqDTO);
+    public String update(@PathVariable Integer id) {
 
         return "redirect:/board/" + id;
     }
 
     @GetMapping("/board/{id}/update-form")
     public String updateForm(@PathVariable Integer id, HttpServletRequest request) {
-        Board board = boardPersistRepository.findById(id);
-        request.setAttribute("board", board);
 
         return "/board/update-form";
     }
 
     @PostMapping("/board/{id}/delete")
     public String delete(@PathVariable Integer id) {
-        boardPersistRepository.deleteById(id);
 
         return "redirect:/";
     }
 
     @GetMapping( "/")
     public String index(HttpServletRequest request) {
-        List<Board> boardList = boardPersistRepository.findAll();
-        request.setAttribute("boardList", boardList);
 
         return "index";
     }
 
     @PostMapping("/board/save")
-    public String save(BoardRequest.SaveDTO reqDTO) {
-        boardPersistRepository.save(reqDTO.toEntity());
+    public String save() {
 
         return "redirect:/";
     }
 
     @GetMapping("/board/save-form")
     public String saveForm() {
+
         return "board/save-form";
     }
 
     @GetMapping("/board/{id}")
     public String detail(@PathVariable Integer id, HttpServletRequest request) { // Integer null 들어오면 확인 가능 (int는 0이라 뜸)
-        Board board = boardNativeRepository.findById(id);
-        request.setAttribute("board", board);
 
         return "board/detail";
     }
