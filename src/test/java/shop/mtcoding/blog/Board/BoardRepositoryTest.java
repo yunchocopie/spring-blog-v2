@@ -1,5 +1,6 @@
 package shop.mtcoding.blog.Board;
 
+import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -16,6 +17,24 @@ public class BoardRepositoryTest {
 
     @Autowired
     private BoardRepository boardRepository;
+
+    @Autowired
+    private EntityManager em;
+
+    @Test
+    public void updateById_test(){
+        // given
+        int id = 1;
+        String title = "new title";
+        String content = "new content";
+
+        // when
+        boardRepository.updateById(id, title, content);
+        em.flush(); // 실제코드에는 트랜젝션 공유 될거기 때문에 안 해도 됨
+
+        // then
+        System.out.println("updateById_test : " + boardRepository.findById(id));
+    }
 
     @Test
     public void deleteById_test(){
@@ -35,9 +54,6 @@ public class BoardRepositoryTest {
         boardList.forEach(board -> {
             System.out.println(board);
         });
-
-
-
     }
 
     @Test

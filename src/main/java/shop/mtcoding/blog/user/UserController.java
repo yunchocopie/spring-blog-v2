@@ -13,6 +13,14 @@ public class UserController {
     private final HttpSession session;
     private final UserRepository userRepository;
 
+    @PostMapping("join")
+    public String join(UserRequest.JoinDTO reqDTO) {
+        User sessionUser =  userRepository.save(reqDTO.toEntity());
+
+        session.setAttribute("sessionUser", sessionUser); // 회원가입과 동시에 로그인
+        return "redirect:/";
+    }
+
     @GetMapping("/join-form")
     public String joinForm() {
 
