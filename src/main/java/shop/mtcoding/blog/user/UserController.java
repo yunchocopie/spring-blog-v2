@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import shop.mtcoding.blog._core.errors.exception.Exception401;
 
 @RequiredArgsConstructor
 @Controller
@@ -59,6 +60,10 @@ public class UserController {
     @GetMapping("/user/update-form") // 세션에 아이디 값이 저장되어있기 때문에 {id} 안 함 + 보안
     public String updateForm(HttpServletRequest request) {
         User sessionUser = (User) session.getAttribute("sessionUser");
+
+        if (sessionUser == null) {
+            throw new Exception401("인증되지 않았어요. 로그인 해주세요.");
+        }
 
         User user = userRepository.findById(sessionUser.getId());
         request.setAttribute("user", user);
