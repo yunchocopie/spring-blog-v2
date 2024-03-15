@@ -9,6 +9,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import shop.mtcoding.blog._core.errors.exception.Exception403;
+import shop.mtcoding.blog._core.errors.exception.Exception404;
 import shop.mtcoding.blog.user.User;
 
 import java.util.List;
@@ -22,6 +24,13 @@ public class BoardController {
 
     @PostMapping("/board/{id}/update")
     public String update(@PathVariable Integer id, BoardRequest.UpadateDTO reqDTO) {
+        User sessionUser = (User) session.getAttribute("sessionUser");
+        Board board = boardRepository.findById(id);
+
+        if (sessionUser.getId() != board.getUser().getId()) {
+            throw new Exception403("게시글을 수정할 권한이 없습니다.");
+        }
+
         boardRepository.updateById(id, reqDTO.getTitle(), reqDTO.getContent());
 
         return "redirect:/board/" + id;
@@ -30,6 +39,11 @@ public class BoardController {
     @GetMapping("/board/{id}/update-form")
     public String updateForm(@PathVariable Integer id, HttpServletRequest request) {
         Board board = boardRepository.findById(id);
+
+        if (board == null) {
+            throw new Exception404("해당 게시글을 찾을 수 없습니다.");
+        }
+
         request.setAttribute("board", board);
 
         return "/board/update-form";
@@ -37,6 +51,13 @@ public class BoardController {
 
     @PostMapping("/board/{id}/delete")
     public String delete(@PathVariable Integer id) {
+        User sessionUser = (User) session.getAttribute("sessionUser");
+        Board board = boardRepository.findById(id);
+
+        if (sessionUser.getId() != board.getUser().getId()) {
+            throw new Exception403("게시글을 삭제할 권한이 없습니다.");
+        }
+
         boardRepository.deleteById(id);
 
         return "redirect:/";
@@ -66,7 +87,18 @@ public class BoardController {
 
     @GetMapping("/board/{id}")
     public String detail(@PathVariable Integer id, HttpServletRequest request) { // Integer null 들어오면 확인 가능 (int는 0이라 뜸)
+        User sessionUser = (User) session.getAttribute("sessionUser");
         Board board = boardRepository.findByIdJoinUser(id);
+
+        // 로그인을 하고, 게시글의 주인이면 isOwner가 true가 됨
+        boolean isOwner = false;
+        if (sessionUser != null) { // 로그인 했으면
+            if (sessionUser.getId() == board.getUser().getId()) {
+                isOwner = true;
+            }
+        }
+
+        request.setAttribute("isOwner", isOwner);
         request.setAttribute("board", board);
         return "board/detail";
     }

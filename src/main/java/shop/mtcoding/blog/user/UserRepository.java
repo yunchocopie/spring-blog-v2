@@ -39,4 +39,5 @@ public class UserRepository {
         query.setParameter("password", reqDTO.getPassword());
         return (User) query.getSingleResult();
     }
+
 }

@@ -1,11 +1,13 @@
 package shop.mtcoding.blog.user;
 
+import jakarta.persistence.NoResultException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import shop.mtcoding.blog._core.errors.exception.Exception400;
 import shop.mtcoding.blog._core.errors.exception.Exception401;
 
 @RequiredArgsConstructor
@@ -20,15 +22,20 @@ public class UserController {
         User sessionUser = (User) session.getAttribute("sessionUser");
 
         userRepository.updateById(sessionUser.getId(), reqDTO.getPassword(), reqDTO.getEmail());
+        session.setAttribute("sessionUser", sessionUser);
 
         return "redirect:/";
     }
 
     @PostMapping("join")
     public String join(UserRequest.JoinDTO reqDTO) {
-        User sessionUser =  userRepository.save(reqDTO.toEntity());
+        try {
+            User sessionUser = userRepository.save(reqDTO.toEntity());
+        } catch (NoResultException e) {
+            throw new Exception400("동일한 유저네임이 존재합니다.");
+        }
 
-        session.setAttribute("sessionUser", sessionUser); // 회원가입과 동시에 로그인
+        // session.setAttribute("sessionUser", sessionUser); // 회원가입과 동시에 로그인
         return "redirect:/";
     }
 
@@ -46,13 +53,18 @@ public class UserController {
 
     @PostMapping("/login")
     public String login(UserRequest.LoginDTO reqDTO) {
-        User sessionUser = userRepository.findByUsernameAndPassword(reqDTO);
+        try {
+            User sessionUser = userRepository.findByUsernameAndPassword(reqDTO);
 
-        if (sessionUser == null) {
-            return "redirect:/login-form";
+            if (sessionUser == null) {
+                return "redirect:/login-form";
+            }
+
+            session.setAttribute("sessionUser", sessionUser);
+
+        } catch (Exception e) {
+            throw new Exception401("유저네임 혹은 비밀번호가 틀렸어요.");
         }
-
-        session.setAttribute("sessionUser", sessionUser);
 
         return "redirect:/";
     }
