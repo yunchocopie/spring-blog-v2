@@ -61,9 +61,9 @@ public class UserController {
     public String updateForm(HttpServletRequest request) {
         User sessionUser = (User) session.getAttribute("sessionUser");
 
-        if (sessionUser == null) {
-            throw new Exception401("인증되지 않았어요. 로그인 해주세요.");
-        }
+//        if (sessionUser == null) {
+//            throw new Exception401("인증되지 않았어요. 로그인 해주세요.");
+//        }
 
         User user = userRepository.findById(sessionUser.getId());
         request.setAttribute("user", user);
