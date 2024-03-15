@@ -1,5 +1,6 @@
 package shop.mtcoding.blog.user;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -12,6 +13,15 @@ public class UserController {
 
     private final HttpSession session;
     private final UserRepository userRepository;
+
+    @PostMapping("/user/update")
+    public String update(UserRequest.UpdateDTO reqDTO) {
+        User sessionUser = (User) session.getAttribute("sessionUser");
+
+        userRepository.updateById(sessionUser.getId(), reqDTO.getPassword(), reqDTO.getEmail());
+
+        return "redirect:/";
+    }
 
     @PostMapping("join")
     public String join(UserRequest.JoinDTO reqDTO) {
@@ -46,8 +56,12 @@ public class UserController {
         return "redirect:/";
     }
 
-    @GetMapping("/user/update-form")
-    public String updateForm() {
+    @GetMapping("/user/update-form") // 세션에 아이디 값이 저장되어있기 때문에 {id} 안 함 + 보안
+    public String updateForm(HttpServletRequest request) {
+        User sessionUser = (User) session.getAttribute("sessionUser");
+
+        User user = userRepository.findById(sessionUser.getId());
+        request.setAttribute("user", user);
 
         return "user/update-form";
     }
