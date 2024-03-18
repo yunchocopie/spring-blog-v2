@@ -33,12 +33,8 @@ public class BoardController {
 
     @GetMapping("/board/{id}/update-form")
     public String updateForm(@PathVariable Integer id, HttpServletRequest request) {
-        Board board = boardRepository.findById(id);
-
-        if (board == null) {
-            throw new Exception404("해당 게시글을 찾을 수 없습니다.");
-        }
-
+        User sessionUser = (User) session.getAttribute("sessionUser");
+        Board board = boardService.게시글수정폼(id, sessionUser.getId());
         request.setAttribute("board", board);
 
         return "/board/update-form";
