@@ -1,34 +1,37 @@
 package shop.mtcoding.blog.board;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import shop.mtcoding.blog.user.User;
-import shop.mtcoding.blog.util.MyDateUtil;
 
 import java.sql.Timestamp;
 
+@NoArgsConstructor
+@Data
 @Table(name = "board_tb")
 @Entity
-@Data
-@NoArgsConstructor // entity는 디폴트 생성자가 무조건 있어야 한다.
-//@Getter setter는 굳이 만들지 않음#
 public class Board {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // auto_increment
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String title;
     private String content;
 
-    // @JoinColumn(name = "user_id") // 직접 이름 지정
-    @ManyToOne(fetch = FetchType.LAZY) // 연관관계로 보고 user_id로 만들어줌. user(변수명), _id(PK)
-    private User user;
+    //@JoinColumn(name = "user_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User user; // db -> user_id
 
-    @CreationTimestamp // pc -> db (날짜 주입)
+    @CreationTimestamp // pc -> db (날짜주입)
     private Timestamp createdAt;
+
+    @Transient // 테이블 생성이 안됨
+    private boolean isOwner;
+
 
     @Builder
     public Board(Integer id, String title, String content, User user, Timestamp createdAt) {
@@ -39,4 +42,3 @@ public class Board {
         this.createdAt = createdAt;
     }
 }
-

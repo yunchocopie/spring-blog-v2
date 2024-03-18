@@ -70,16 +70,13 @@ public class BoardController {
         return "board/save-form";
     }
 
-
+    // SSR은 DTO를 굳이 만들 필요가 없다. 필요한 데이터만 랜더링해서 클라이언트에게 전달할 것이니까!!
     @GetMapping("/board/{id}")
-    public @ResponseBody BoardResponse.DetailDTO detail(@PathVariable Integer id, HttpServletRequest request) {
+    public String detail(@PathVariable Integer id, HttpServletRequest request) {
         User sessionUser = (User) session.getAttribute("sessionUser");
-        return boardService.글상세보기(id, sessionUser);
+        Board board = boardService.글상세보기(id, sessionUser);
 
-
-//
-//        request.setAttribute("isOwner", isOwner);
-//        request.setAttribute("board", board);
-//        return "board/detail";
+        request.setAttribute("board", board);
+        return "board/detail";
     }
 }
