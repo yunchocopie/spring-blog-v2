@@ -39,23 +39,17 @@ public class BoardController {
         return "/board/update-form";
     }
 
+
     @PostMapping("/board/{id}/delete")
     public String delete(@PathVariable Integer id) {
         User sessionUser = (User) session.getAttribute("sessionUser");
-        Board board = boardRepository.findById(id);
-
-        if (sessionUser.getId() != board.getUser().getId()) {
-            throw new Exception403("게시글을 삭제할 권한이 없습니다.");
-        }
-
-        boardRepository.deleteById(id);
-
+        boardService.글삭제(id,sessionUser.getId());
         return "redirect:/";
     }
 
     @GetMapping( "/")
     public String index(HttpServletRequest request) {
-        List<Board> boardList = boardRepository.findAll();
+        List<Board> boardList = boardService.글목록조회();
         request.setAttribute("boardList", boardList);
 
         return "index";
