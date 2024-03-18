@@ -21,8 +21,7 @@ public class UserController {
     @PostMapping("/user/update")
     public String update(UserRequest.UpdateDTO reqDTO) {
         User sessionUser = (User) session.getAttribute("sessionUser");
-
-        userRepository.updateById(sessionUser.getId(), reqDTO.getPassword(), reqDTO.getEmail());
+        User newSessionUser = userService.회원수정(sessionUser.getId(), reqDTO);
         session.setAttribute("sessionUser", sessionUser);
 
         return "redirect:/";
@@ -50,18 +49,8 @@ public class UserController {
 
     @PostMapping("/login")
     public String login(UserRequest.LoginDTO reqDTO) {
-        try {
-            User sessionUser = userRepository.findByUsernameAndPassword(reqDTO);
-
-            if (sessionUser == null) {
-                return "redirect:/login-form";
-            }
-
-            session.setAttribute("sessionUser", sessionUser);
-
-        } catch (Exception e) {
-            throw new Exception401("유저네임 혹은 비밀번호가 틀렸어요.");
-        }
+        User sessionUser = userService.로그인(reqDTO);
+        session.setAttribute("sessionUser", sessionUser);
 
         return "redirect:/";
     }
@@ -74,7 +63,7 @@ public class UserController {
 //            throw new Exception401("인증되지 않았어요. 로그인 해주세요.");
 //        }
 
-        User user = userRepository.findById(sessionUser.getId());
+        User user = userService.회원수정폼(sessionUser.getId());
         request.setAttribute("user", user);
 
         return "user/update-form";
