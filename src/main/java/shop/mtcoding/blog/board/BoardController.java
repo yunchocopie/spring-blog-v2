@@ -19,19 +19,14 @@ import java.util.List;
 @Controller
 public class BoardController {
 
+    private final BoardService boardService;
     private final BoardRepository boardRepository;
     private final HttpSession session;
 
     @PostMapping("/board/{id}/update")
     public String update(@PathVariable Integer id, BoardRequest.UpadateDTO reqDTO) {
         User sessionUser = (User) session.getAttribute("sessionUser");
-        Board board = boardRepository.findById(id);
-
-        if (sessionUser.getId() != board.getUser().getId()) {
-            throw new Exception403("게시글을 수정할 권한이 없습니다.");
-        }
-
-        boardRepository.updateById(id, reqDTO.getTitle(), reqDTO.getContent());
+        boardService.글수정(id, sessionUser.getId(), reqDTO);
 
         return "redirect:/board/" + id;
     }
@@ -74,7 +69,7 @@ public class BoardController {
     @PostMapping("/board/save")
     public String save(BoardRequest.SaveDTO reqDTO) {
         User sessionUser = (User) session.getAttribute("sessionUser");
-        boardRepository.save(reqDTO.toEntity(sessionUser));
+        boardService.글쓰기(reqDTO, sessionUser);
 
         return "redirect:/";
     }
