@@ -62,6 +62,16 @@ public class BoardService {
     public List<Board> 글목록조회() {
         Sort sort = Sort.by(Sort.Direction.DESC, "id");
 
-        return boardJPARepository.findAll();
+        return boardJPARepository.findAll(sort);
+    }
+
+    // board, isOwner
+    public BoardResponse.DetailDTO 글상세보기(int boardId, User sessionUser) {
+        Board board = boardJPARepository.findByIdJoinUser(boardId)
+                .orElseThrow(() -> new Exception404("게시글을 찾을 수 없습니다"));
+
+        // 로그인을 하고, 게시글의 주인이면 isOwner가 true가 된다.
+
+        return new BoardResponse.DetailDTO(board, sessionUser);
     }
 }
