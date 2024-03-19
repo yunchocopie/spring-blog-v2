@@ -33,11 +33,12 @@ public class Board {
     private Timestamp createdAt;
 
     // 조회할 때 담는 용도로만 사용
-    @OneToMany(mappedBy = "board", fetch = FetchType.LAZY) // Entity 객체의 변수명 == FK의 주인
+    @OrderBy("id desc")
+    @OneToMany(mappedBy = "board", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE) // Entity 객체의 변수명 == FK의 주인
     private List<Reply> replies = new ArrayList<>(); // 댓글이 없을 경우 터질 수 있으니 초기화 해서 크기를 0으로 맟추기
 
     @Transient // 테이블 생성이 안됨
-    private boolean isOwner;
+    private boolean isBoardOwner;
 
     @Builder
     public Board(Integer id, String title, String content, User user, Timestamp createdAt) {
