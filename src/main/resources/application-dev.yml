@@ -31,4 +31,5 @@ spring:
         format_sql: true
         default_batch_fetch_size: 10 # lazy 하게 땡길 때 셀랙트 여러번 안 하고 인쿼리를 만들어줌
     defer-datasource-initialization: true
+    open-in-view: true # flase면 서비스에서 컨트롤러로 넘어가는 순간 연결이 끊김 (서비스에서 끊김)
 

@@ -79,6 +79,6 @@ public class BoardService {
 
         board.setOwner(isOwner);
 
-        return board;
+        return board; // board, user만 있음
     }
 }

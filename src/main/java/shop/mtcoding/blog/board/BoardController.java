@@ -77,6 +77,7 @@ public class BoardController {
         Board board = boardService.글상세보기(id, sessionUser);
 
         request.setAttribute("board", board);
+        System.out.println("서버 사이드 렌더링 직전에는 Board와 User만 조회된 상태이다~~");
         return "board/detail";
     }
 }
