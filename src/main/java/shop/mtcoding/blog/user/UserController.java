@@ -18,6 +18,8 @@ public class UserController {
     private final HttpSession session;
     private final UserRepository userRepository;
 
+    // TODO : 회원정보 조회 API 필요
+
     @PostMapping("/user/update")
     public String update(UserRequest.UpdateDTO reqDTO) {
         User sessionUser = (User) session.getAttribute("sessionUser");
@@ -35,38 +37,12 @@ public class UserController {
         return "redirect:/";
     }
 
-    @GetMapping("/join-form")
-    public String joinForm() {
-
-        return "user/join-form";
-    }
-
-    @GetMapping("/login-form")
-    public String loginForm() {
-
-        return "user/login-form";
-    }
-
     @PostMapping("/login")
     public String login(UserRequest.LoginDTO reqDTO) {
         User sessionUser = userService.로그인(reqDTO);
         session.setAttribute("sessionUser", sessionUser);
 
         return "redirect:/";
-    }
-
-    @GetMapping("/user/update-form") // 세션에 아이디 값이 저장되어있기 때문에 {id} 안 함 + 보안
-    public String updateForm(HttpServletRequest request) {
-        User sessionUser = (User) session.getAttribute("sessionUser");
-
-//        if (sessionUser == null) {
-//            throw new Exception401("인증되지 않았어요. 로그인 해주세요.");
-//        }
-
-        User user = userService.회원수정폼(sessionUser.getId());
-        request.setAttribute("user", user);
-
-        return "user/update-form";
     }
 
     @GetMapping("/logout")
