@@ -15,6 +15,12 @@ public class UserService {
 
     private final UserJPARepository userJPARepository;
 
+    public User 회원조회(int id){
+        User user = userJPARepository.findById(id)
+                .orElseThrow(() -> new Exception404("회원정보를 찾을 수 없습니다"));
+        return user;
+    }
+
     public User 회원수정(int id, UserRequest.UpdateDTO reqDTO) {
         User user = userJPARepository.findById(id)
                 .orElseThrow(() -> new Exception404("회원정보를 찾을 수 없습니다.")); // 예외처리
@@ -41,7 +47,7 @@ public class UserService {
     }
 
     @Transactional
-    public void 회원가입(UserRequest.JoinDTO reqDTO) {
+    public User 회원가입(UserRequest.JoinDTO reqDTO) {
         // 1. 유효성 검사 - controller 책임
 
         // 2. 유저네임 중복 검사 - service (DB연결이 필요한 것들은 서비스가)
@@ -51,6 +57,6 @@ public class UserService {
             throw new Exception400("중복된 유저입니다.");
         }
 
-        userJPARepository.save(reqDTO.toEntity());
+        return userJPARepository.save(reqDTO.toEntity());
     }
 }
